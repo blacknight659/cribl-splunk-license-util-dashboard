@@ -17,7 +17,7 @@ Presenting the License Metrics Dashboard!
 - Ability to Create Indexes and Dashboards
 
 ### Source Files:
-- Splunk [`Dashboard`](https://link-to-license-example.com).
+- Splunk [`Dashboard`](https://github.com/blacknight659/cribl-splunk-license-util-dashboard).
 - Original Cribl LogStream Metrics app [`on Splunkbase`](https://splunkbase.splunk.com/app/5339/).
 
 # Start Here
