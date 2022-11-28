@@ -1,6 +1,6 @@
-<form theme="dark">
-  <label>LogStream License Metrics</label>
-  <description>Created By: Justin Hamblin</description>
+<form version="1.1" theme="dark"> 
+  <label>Cribl Stream License Metrics</label>
+  <description></description>
   <fieldset submitButton="true" autoRun="true">
     <input type="time" searchWhenChanged="true" token="global_time_tok">
       <label>Time Range</label>
@@ -21,10 +21,10 @@
   </fieldset>
   <row>
     <panel>
-      <title>LogStream $unit$_in</title>
+      <title>Cribl Stream $unit$_in</title>
       <single>
         <search>
-          <query>| mstats sum("cribl.logstream.route.in_bytes") prestats=true WHERE index=logstream_metrics span=1h
+          <query>| mstats sum("cribl.logstream.route.in_bytes") prestats=true WHERE index=cribl_metrics span=1h
 | stats sum("cribl.logstream.route.in_bytes") AS bytes
 | eval KB=round(bytes/1024, 4)
 | eval MB=round(bytes/1024/1024, 4)
@@ -46,10 +46,10 @@
       </single>
     </panel>
     <panel>
-      <title>LogStream $unit$_out</title>
+      <title>Cribl Stream $unit$_out</title>
       <single>
         <search>
-          <query>| mstats sum("cribl.logstream.route.out_bytes") prestats=true WHERE index=logstream_metrics span=1h
+          <query>| mstats sum("cribl.logstream.route.out_bytes") prestats=true WHERE index=cribl_metrics span=1h
 | stats sum("cribl.logstream.route.out_bytes") AS bytes
 | eval KB=round(bytes/1024, 4)
 | eval MB=round(bytes/1024/1024, 4)
@@ -70,10 +70,10 @@
       </single>
     </panel>
     <panel>
-      <title>LogStream $unit$ Volume Reduction</title>
+      <title>Cribl Stream $unit$ Volume Reduction</title>
       <single>
         <search>
-          <query>| mstats sum("cribl.logstream.route.out_bytes") as bytes_out sum("cribl.logstream.route.in_bytes") as bytes_in WHERE index=logstream_metrics
+          <query>| mstats sum("cribl.logstream.route.out_bytes") as bytes_out sum("cribl.logstream.route.in_bytes") as bytes_in WHERE index=cribl_metrics
 | eval KB_in=round(bytes_in/1024, 4), KB_out=round(bytes_out/1024, 4)
 | eval MB_in=round(bytes_in/1024/1024, 4), MB_out=round(bytes_out/1024/1024, 4)
 | eval GB_in=round(bytes_in/1024/1024/1024, 4), GB_out=round(bytes_out/1024/1024/1024, 4)
@@ -99,10 +99,10 @@
       </single>
     </panel>
     <panel>
-      <title>LogStream $unit$ Volume Reduction %</title>
+      <title>Cribl Stream $unit$ Volume Reduction %</title>
       <single>
         <search>
-          <query>| mstats sum("cribl.logstream.route.out_bytes") as bytes_out sum("cribl.logstream.route.in_bytes") as bytes_in WHERE index=logstream_metrics
+          <query>| mstats sum("cribl.logstream.route.out_bytes") as bytes_out sum("cribl.logstream.route.in_bytes") as bytes_in WHERE index=cribl_metrics
 |eval KB_in=round(bytes_in/1024, 4), KB_out=round(bytes_out/1024, 4)
 | eval MB_in=round(bytes_in/1024/1024, 4), MB_out=round(bytes_out/1024/1024, 4)
 | eval GB_in=round(bytes_in/1024/1024/1024, 4), GB_out=round(bytes_out/1024/1024/1024, 4)
@@ -128,10 +128,10 @@
   </row>
   <row>
     <panel>
-      <title>LogStream $unit$_in</title>
+      <title>Cribl Stream $unit$_in</title>
       <chart>
         <search>
-          <query>| mstats sum("cribl.logstream.route.in_bytes") prestats=true WHERE index=logstream_metrics span=15m
+          <query>| mstats sum("cribl.logstream.route.in_bytes") prestats=true WHERE index=cribl_metrics span=15m
 | timechart sum("cribl.logstream.route.in_bytes") AS bytes span=15m
 | table _time bytes
 | eval KB=round(bytes/1024, 4)
@@ -181,10 +181,10 @@
       </chart>
     </panel>
     <panel>
-      <title>LogStream $unit$_out</title>
+      <title>Cribl Stream $unit$_out</title>
       <chart>
         <search>
-          <query>| mstats sum("cribl.logstream.route.out_bytes") prestats=true WHERE index=logstream_metrics span=15m
+          <query>| mstats sum("cribl.logstream.route.out_bytes") prestats=true WHERE index=cribl_metrics span=15m
 | timechart sum("cribl.logstream.route.out_bytes") AS bytes span=15m
 | table _time bytes
 | eval KB=round(bytes/1024, 4)
@@ -206,11 +206,11 @@
     <panel>
       <title>Splunk License $unit$ used</title>
       <input type="dropdown" token="idx_select" searchWhenChanged="true">
-        <label>Include/Exclude Logstream_Metrics Index</label>
+        <label>Include/Exclude Cribl_Stream_Metrics Index</label>
         <choice value="idx=*">Include</choice>
-        <choice value="idx!=logstream_metrics">Exclude</choice>
-        <default>idx!=logstream_metrics</default>
-        <initialValue>idx!=logstream_metrics</initialValue>
+        <choice value="idx!=cribl_metrics">Exclude</choice>
+        <default>idx!=cribl_metrics</default>
+        <initialValue>idx!=cribl_metrics</initialValue>
       </input>
       <chart>
         <search>
@@ -236,13 +236,12 @@
       <table>
         <search>
           <query>index=_internal source=*license_usage.log type=Usage pool=* $idx_select$
-| stats sum(b) as b by pool idx 
+| stats sum(b) as b by pool idx
 | eval KB_used=round(b/1024, 4), MB_used=round(b/1024/1024, 4), GB_used=round(b/1024/1024/1024, 4)
 | rename b as bytes_used
-
-| addcoltotals $unit$_used labelfield=idx label="TOTAL $unit$'s USED:" 
-| rename idx as Index pool as "License Pool" $unit$_used as "$unit$'s Used" 
-| fields "License Pool" Index "$unit$'s Used" 
+| addcoltotals $unit$_used labelfield=idx label="TOTAL $unit$'s USED:"
+| rename idx as Index pool as "License Pool" $unit$_used as "$unit$'s Used"
+| fields "License Pool" Index "$unit$'s Used"
 | sort - "$unit$'s Used"</query>
           <earliest>$global_time_tok.earliest$</earliest>
           <latest>$global_time_tok.latest$</latest>
